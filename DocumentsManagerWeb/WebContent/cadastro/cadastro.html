@@ -1,0 +1,395 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-styles/demo-pages.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+
+<dom-module id="cadastro-view">
+  <template id="cadastro-view">
+	<style>
+	:host {
+		display: block;
+		position: relative;
+		padding: 1em 0;
+	}
+	
+	.paper {
+		background: #4285f4;
+		color: #fff;
+	}
+	
+	  .horizontal-section-container {
+    @apply(--layout-horizontal);
+    @apply(--layout-center);
+/*     @apply(--layout-wrap);  */
+    @apply(--center-justified);
+    
+  }
+
+  .vertical-section-container {
+    @apply(--layout-vertical);
+    @apply(--center-justified);
+
+
+  }
+
+  .horizontal-section {
+    background-color: white;
+    padding: 24px;
+    margin-right: 24px;
+    min-width: 260px; 
+    min-height: 350px;
+    top: 10px;
+    @apply(--shadow-elevation-2dp);
+  }
+
+  .vertical-section {
+    background-color: white;
+    padding: 24px;
+    margin: 0 24px 24px 24px;
+
+    @apply(--shadow-elevation-2dp);
+  }
+  paper-input-container{
+  	min-width: 100px;
+  }
+  paper-input{
+    min-width: 100px;
+  }
+  * {
+    box-sizing: border-box;
+	}
+  .row::after {
+	    content: "";
+	    clear: both;
+	    display: block;
+	}
+   [class*="col-"] {
+	    float: left;
+	    padding: 15px;
+	}
+	.col-1 {
+		width: 50%;
+	}
+	.col-2 {
+		width: 15%;
+	}
+	.col-3 {
+		width: 20%;
+	}
+	vaadin-combo-box {
+	    max-width: 300px;
+	}
+	paper-button.green {
+	    background-color: var(--paper-green-500);
+	    color: white;
+	    max-width: 300px;
+	}
+	paper-button.red {
+	    background-color: var(--paper-red-500);
+	    color: white;
+	    max-width: 150px;
+	}
+	.yellow-button {
+          text-transform: none;
+          color: #eeff41;
+        }
+        
+</style>
+	<div align="center" class="row">	
+    	<div align="center" class="col-1">
+			<paper-input id="logon"  bind-value = "{{logon}}" label="User Name" maxlength="60" required always-float-label>
+				<iron-icon icon="label" prefix></iron-icon>
+			</paper-input>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-1">
+			<paper-input id="pass" bind-value = "{{password}}" type="password" label="Password" maxlength="45" required always-float-label>
+				<iron-icon icon="label" prefix></iron-icon>
+			</paper-input>
+		</div>
+	</div>	
+    <div class="row">
+    	<div class="col-1">
+			<paper-input id="nome"  bind-value = "{{nome}}" label="Nome" maxlength="45" required always-float-label>
+				<iron-icon icon="label" prefix></iron-icon>
+			</paper-input>
+		</div>
+	</div>
+	<div class="row">
+    	<div class="col-1">
+			<paper-input id="documento"  bind-value = "{{documento}}" label="Documento" maxlength="45" required always-float-label>
+				<iron-icon icon="label" prefix></iron-icon>
+			</paper-input>
+		</div>
+	</div>
+	
+	<div align="center" class="row">	
+    	<div>
+    	    <paper-button raised class="custom green" on-click="confirm"><iron-icon icon="save"></iron-icon>Criar conta</paper-button>
+		</div>
+		
+		<paper-toast id="message" duration="0" text="H&aacute; campos obrigat&oacute;rios n&atilde;o preenchidos!">
+				<paper-button onclick="message.toggle()" class="yellow-button">Close now!</paper-button>
+		</paper-toast>
+	</div>	
+  </template>
+</dom-module>
+<script>
+Polymer({
+    is: 'cadastro-view',
+    properties: {
+        service: {
+            type: String
+        },
+        method: {
+        	type: String
+        },
+        redirect: {
+        	type: Boolean,
+        	value: false
+        }
+    },
+    cancel: function () {
+    	this.$.logon.value = "";
+    	this.$.pass.value = "";
+    	this.$.nome.value = "";
+    	this.$.documento.value = "";
+    	
+		this.$.logon.invalid = false;
+		this.$.pass.invalid = false;
+		this.$.nome.invalid = false;
+		this.$.documento.invalid = false;
+    	
+    	this.$.message.close();
+    },
+//     getToken : function (cnome) {
+// 	    var nome = cnome + "=";
+// 	    var ca = document.cookie.split(';');
+// 	    for(var i = 0; i < ca.length; i++) {
+// 	        var c = ca[i];
+// 	        while (c.charAt(0) == ' ') {
+// 	            c = c.substring(1);
+// 	        }
+// 	        if (c.indexOf(nome) == 0) {
+// 	            return c.substring(nome.length, c.length);
+// 	        }
+// 	    }
+// 	    return "";
+// 	},
+	 
+    confirm: function(){
+    	this.$.logon.validate();
+    	this.$.pass.validate();
+    	this.$.nome.validate();
+    	this.$.documento.validate();
+		if(this.$.logon.invalid || this.$.pass.invalid || this.$.nome.invalid || this.$.documento.invalid){
+			this.$.message.open();
+			return;
+		}
+    	
+    	var usuarioDTO = new Object();
+    	usuarioDTO.logon = this.logon;
+    	usuarioDTO.password = this.password;
+    	usuarioDTO.nome = this.nome;
+    	usuarioDTO.documento = this.documento;
+    	
+    	var person = new Object();
+		person.logon = this.logon;
+		person.password = this.password;
+    	
+    	var rawFile = new XMLHttpRequest();
+        rawFile.overrideMimeType("application/json");
+        rawFile.open(this.method, this.service, true);
+        
+//         var tokenLoad;
+//         var nome = "token=";
+// 	    var ca = document.cookie.split(';');
+// 	    for(var i = 0; i < ca.length; i++) {
+// 	        var c = ca[i];
+// 	        while (c.charAt(0) == ' ') {
+// 	            c = c.substring(1);
+// 	        }
+// 	        if (c.indexOf(nome) == 0) {
+// 	        	tokenLoad = c.substring(nome.length, c.length);
+// 	        }
+// 	    }
+        
+	    var redireciona =  this.redirect;
+	    
+//         if(tokenLoad != null){
+//         	rawFile.setRequestHeader("Authorization", tokenLoad);
+//         }
+        
+        var mensagem = this.$.message;
+        rawFile.setRequestHeader("Content-Type", "application/json");
+        rawFile.onreadystatechange = function() {
+            if (rawFile.readyState === 4 && rawFile.status == "200") {
+            	mensagem.text = JSON.parse(rawFile.responseText).mensagem;
+            	mensagem.open();
+            	if("OK" == JSON.parse(rawFile.responseText).status && redireciona){
+            		var form = document.createElement("form");
+    			    form.setAttribute("method", "post");
+    			    form.setAttribute("action", "/DocumentsManagerWeb/login/");
+    				
+    				var hiddenField = document.createElement("input");
+    			    hiddenField.setAttribute("type", "hidden");
+    			    hiddenField.setAttribute("nome", 'person');
+    			    hiddenField.setAttribute("value", person);
+    		
+    			    form.appendChild(hiddenField);
+    		
+    			    document.body.appendChild(form);
+    			    form.submit();
+            	}
+            }
+        }
+        rawFile.send(JSON.stringify(usuarioDTO));
+        //rawFile.send(null);
+    }
+    
+  });
+  
+  HTMLImports.whenReady(function() {
+	    var logon = document.querySelector('#logon');
+	    var password = document.querySelector('#pass');
+	    var nome = document.querySelector('#nome');
+	    var documento = document.querySelector('#documento');
+	    
+// 		function validateLogin(){
+// 			var token = getCookie("token");
+// 			if(token != null){
+// 		       	var url = "http://localhost:8080/br.furb.consultor-backend/consultor/user/usuario-logado";
+// 		   		var rawFile = new XMLHttpRequest();
+		     	           
+// 		   		rawFile.overrideMimeType("application/json");
+// 				rawFile.open("GET", url, false);
+// 				rawFile.setRequestHeader("Authorization", token);
+// 				rawFile.onreadystatechange = function() {
+// 				     if (rawFile.status == "200") {
+// 				    	 var usuarioLogado = JSON.parse(rawFile.responseText);
+// 				    	 logon.value = usuarioLogado.userName;
+// 				    	 password.value = usuarioLogado.password;
+// 				    	 cpf1.value = usuarioLogado.cpf.toString().substr(0, 3);
+// 				    	 cpf2.value = usuarioLogado.cpf.toString().substr(3, 3);
+// 				    	 cpf3.value = usuarioLogado.cpf.toString().substr(6, 3);
+// 				    	 cpf4.value = usuarioLogado.cpf.toString().substr(9, 2);
+// 				    	 cpf.value = usuarioLogado.cpf;
+// 				    	 nome.value = usuarioLogado.nome;
+// 				    	 email.value = usuarioLogado.email;
+// 				    	 profissao.value = usuarioLogado.profissao;
+// 				    	 tipo_transacao.value = usuarioLogado.perfilInvestidor;
+// 				    	 tipo_operacao.value = usuarioLogado.formaOperacao;
+// 				     }
+// 				}
+// 				rawFile.send(null);
+// 			}
+// 		}
+		
+// 		 function getCookie (cnome) {
+// 		    var nome = cnome + "=";
+// 		    var ca = document.cookie.split(';');
+// 		    for(var i = 0; i < ca.length; i++) {
+// 		        var c = ca[i];
+// 		        while (c.charAt(0) == ' ') {
+// 		            c = c.substring(1);
+// 		        }
+// 		        if (c.indexOf(nome) == 0) {
+// 		            return c.substring(nome.length, c.length);
+// 		        }
+// 		    }
+// 		    return "";
+// 		}
+		 
+		window.onload = validateLogin;
+
+	  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   Polymer({
+//     is: 'cadastro-view',
+//     properties: {
+//         service: {
+//             type: String
+//         },
+//         method: {
+//         	type: String
+//         },
+//         redirect: {
+//         	type: Boolean,
+//         	value: false
+//         }
+//     },
+    
+//     confirm: function(){
+// // 		var url = "http://localhost:8080/br.com.PedidosWeb/rest/auth/create";
+// //    		var rawFile = new XMLHttpRequest();
+     	           
+// //    		rawFile.overrideMimeType("application/json");
+// // 		rawFile.open("POST", url, false);
+// // 		rawFile.onreadystatechange = function() {
+// // 		     if (rawFile.status != "200") {
+// // 		    	var form = document.createElement("form");
+// // 			    form.setAttribute("method", "post");
+// // 			    form.setAttribute("action", "/PedidosWeb/login/");
+				
+// // 			    document.body.appendChild(form);
+// // 			    form.submit();
+// // 		     }
+// // 		}
+// // 		rawFile.send(null);
+
+// 		var mensagem = this.$.message;
+// 		var rawFile = new XMLHttpRequest();
+//         rawFile.overrideMimeType("application/json");
+//         rawFile.open(this.method, this.service, true);
+        
+//         rawFile.setRequestHeader("Content-Type", "application/json");
+//         rawFile.onreadystatechange = function() {
+//             if (rawFile.readyState == 4 && rawFile.status == "200") {
+//             	mensagem.text = JSON.parse(rawFile.responseText).mensagem;
+//             	mensagem.open();
+//             	if("OK" == JSON.parse(rawFile.responseText).status && redireciona){
+//             		var form = document.createElement("form");
+//     			    form.setAttribute("method", "post");
+//     			    form.setAttribute("action", "/DocumentsManagerWeb/login/");
+    				
+//     				var hiddenField = document.createElement("input");
+//     			    hiddenField.setAttribute("type", "hidden");
+//     			    hiddenField.setAttribute("nome", 'person');
+//     			    hiddenField.setAttribute("value", person);
+    		
+//     			    form.appendChild(hiddenField);
+    		
+//     			    document.body.appendChild(form);
+//     			    form.submit();
+//             	}
+//             }
+//         }
+//         rawFile.send();
+//     }
+//  });
+  
+
+</script>

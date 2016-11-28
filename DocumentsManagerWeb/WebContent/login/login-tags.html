@@ -1,0 +1,237 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-styles/demo-pages.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+
+<dom-module id="login-view">
+  <template id="login-view">
+	<style>
+	:host {
+		display: block;
+		position: center;
+		padding: 1em 0;
+	}
+	
+	.paper {
+		background: #4285f4;
+		color: #fff;
+	}
+	
+	.horizontal-section-container {
+	    @apply(--layout-horizontal);
+	    @apply(--layout-center);
+	    @apply(--center-justified);
+  	}
+
+  	.vertical-section-container {
+    	@apply(--layout-vertical);
+   	 	@apply(--center-justified);
+	}
+
+	.horizontal-section {
+	    background-color: white;
+	    padding: 24px;
+	    margin-right: 24px;
+	    min-width: 260px; 
+	    min-height: 350px;
+	    top: 10px;
+	    @apply(--shadow-elevation-2dp);
+  	}
+
+  	.vertical-section {
+    	background-color: white;
+    	padding: 24px;
+    	margin: 0 24px 24px 24px;
+    	@apply(--shadow-elevation-2dp);
+  	}
+	
+	#footer {
+	    background-color:black;
+	    color:white;
+	    clear:both;
+	    text-align:center;
+	   	padding:5px;	 	 
+	}
+	
+	a:link {
+		text-decoration: none;
+		color : white;
+	}
+		
+	a:visited {
+	    text-decoration: none;
+		color : white;
+	}
+		
+	a:active {
+	    color : white;
+	}
+	
+	a:hover{
+	    color : whites;
+	}
+		
+  	.yellow-button {
+	    text-transform: none;
+        color: #eeff41;
+    }
+    
+	</style>
+    <div>
+   		<div align="center" class="horizontal-section-container">
+			<div align="left">
+				<div class="horizontal-section">
+					<paper-input id="inputusername"  bind-value = "{{username}}" label="User name" maxlength="45" required>User name</paper-input>
+					<br>
+					<paper-input id="inputpassword" bind-value = "{{password}}" type="password" label="Password" maxlength="45" required>Password</paper-input>
+					<br>
+					
+					<div align="center">
+						<paper-button id="login" class="paper" on-click="login" raised>Login</paper-button>
+						<paper-button id="cancel" class="paper" on-click="cancel" raised>Cancel</paper-button>
+					</div>
+					<br>
+					<br>
+					<div id="footer">
+						<paper-button>
+							<iron-icon icon="label-outline" prefix></iron-icon>
+							 <a href="/DocumentsManagerWeb/cadastro/">Create Account</a>
+					    </paper-button>
+					    <paper-toast id="errorMessage" duration="0" text="&Eacute; obrig&aacute;torio informar o usu&aacute;rio e a senha!">
+					        <paper-button onclick="errorMessage.toggle()" class="yellow-button">Close now!</paper-button>
+					    </paper-toast>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  </template>
+</dom-module>
+<script>
+
+  Polymer({
+    is: 'login-view',
+    login: function () {
+    		this.$.inputpassword.validate();
+        	this.$.inputusername.validate();
+    		if(this.$.inputpassword.invalid || this.$.inputusername.invalid){
+    			this.$.errorMessage.open();
+    			
+    			return;
+    		}
+		    var person = new Object();
+			person.username = this.username;
+			person.password = this.password;
+			
+			componente_error = this.$.errorMessage;
+			hasError = false;
+			var token = this.getCookie("token");
+			if (token != null && token != "") {
+				hasError = this.logonToken(token, componente_error);
+			} else {
+				 var url_logon = "http://localhost:8080/DocumentsManagerWeb/rest/auth/user/"+person.username+"/passoword/"+person.password;
+         		 var logon_service = new XMLHttpRequest();
+     	        
+         		 logon_service.overrideMimeType("application/json");
+         		 logon_service.open("POST", url_logon, false);
+         		 logon_service.onreadystatechange = function() {
+	     	         if (logon_service.status == "200") {
+	     	        	token = JSON.parse(logon_service.responseText).token;
+	     	        	var url = "http://localhost:8080/DocumentsManagerWeb/rest/auth/token/"+token;
+		     	   		var rawFile = new XMLHttpRequest();
+		     	           
+		     	   		rawFile.overrideMimeType("application/json");
+		     	        rawFile.open("POST", url, false);
+		     	        rawFile.onreadystatechange = function() {
+		     	             if (rawFile.status != "200") {
+		     	            	componente_error.text = JSON.parse(rawFile.responseText).message;
+		     	            	componente_error.open();
+		     	            	hasError = true;
+		     	            	throw JSON.parse(rawFile.responseText).message; 
+		     	             }
+		     	        }
+		     	        rawFile.send(null);
+		     	        
+		     	        var d = new Date();
+		     	        d.setTime(d.getTime() + (1*24*60*60*1000));
+		     	        var expires = "expires="+d.toUTCString();
+		     	        document.cookie = "token=" + JSON.parse(this.responseText).token + "; " + expires + "; path=/";
+	     	         }else{
+	     	        	componente_error.text = logon_service.responseText;
+	     	        	componente_error.open();
+	     	        	hasError = true;
+	     	        	throw logon_service.responseText; 
+	     	         }
+     	         }
+         		 logon_service.send(null);
+			}
+			
+			if(!hasError){
+			    var form = document.createElement("form");
+			    form.setAttribute("method", "post");
+			    form.setAttribute("action", "/DocumentsManagerWeb/usermanager/");
+				
+				var hiddenField = document.createElement("input");
+			    hiddenField.setAttribute("type", "hidden");
+			    hiddenField.setAttribute("name", 'person');
+			    hiddenField.setAttribute("value", person);
+		
+			    form.appendChild(hiddenField);
+		
+			    document.body.appendChild(form);
+			    form.submit();
+			}
+    },    
+    cancel: function () {
+    	this.$.inputusername.value = "";
+    	this.$.inputpassword.value = "";
+    	this.$.inputpassword.invalid = false;
+    	this.$.inputusername.invalid = false;
+    	
+    	this.$.errorMessage.close();
+    },
+    
+    setCookie: function (cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    },
+
+    getCookie: function (cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    },
+    
+    logonToken: function(token, componente_error){
+    	var url = "http://localhost:8080/br.com.entities/Pessoa/auth/token/"+token;
+		var rawFile = new XMLHttpRequest();
+        var error = false;
+		
+		rawFile.overrideMimeType("application/json");
+        rawFile.open("POST", url, false);
+        rawFile.onreadystatechange = function() {
+             if (rawFile.status != "200") {
+            	 componente_error.text = JSON.parse(rawFile.responseText).message;
+            	 componente_error.open();
+            	 error = true;
+            	 throw JSON.parse(rawFile.responseText).message; 
+             }
+        }
+        rawFile.send(null);
+        return error;
+    }
+  });
+</script>

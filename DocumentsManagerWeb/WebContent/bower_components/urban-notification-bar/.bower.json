@@ -1,0 +1,29 @@
+{
+  "name": "urban-notification-bar",
+  "version": "0.2.2",
+  "authors": [
+    "Matt Styles <@personalurban>"
+  ],
+  "description": "Animating notification bar element",
+  "keywords": "notify, notification, notification-bar, urban, polymer, web-components, web-animations",
+  "main": "urban-notification-bar.html",
+  "license": "MIT",
+  "homepage": "https://github.com/mattstyles/urban-notification-bar/",
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#>=0.4.0 <1.0.0",
+    "web-animations-js": "git://github.com/web-animations/web-animations-js.git"
+  },
+  "_release": "0.2.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.2.2",
+    "commit": "02ab56b0b656ab38b940b849b60000875cdba470"
+  },
+  "_source": "https://github.com/mattstyles/urban-notification-bar.git",
+  "_target": "^0.2.2",
+  "_originalSource": "urban-notification-bar",
+  "_direct": true
+}
