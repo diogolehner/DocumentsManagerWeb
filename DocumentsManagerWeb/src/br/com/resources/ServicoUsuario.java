@@ -62,7 +62,7 @@ public class ServicoUsuario {
 	@Produces(MediaType.APPLICATION_JSON)
 	public DocumentoDTO getDocumentoDTO() throws Exception{
 		Long usuarioID = Long.valueOf(httpRequest.getRequestHeader("idUsuario").get(0));
-		DocumentoDTO documentoDTO = DocumentoAS.getMensagem(usuarioID);
+		DocumentoDTO documentoDTO = DocumentoAS.getMensagem(usuarioID, "1");
 		return documentoDTO;
 	}
 	

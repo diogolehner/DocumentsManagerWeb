@@ -2,9 +2,11 @@ package br.com.as;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.bouncycastle.crypto.CipherParameters;
+
 import br.com.controller.DocumentoController;
 import br.com.controller.UsuarioController;
-import br.com.crypt.EncriptaDecriptaRSA;
+import br.com.crypt.Criptografar;
 import br.com.dto.DocumentoDTO;
 import br.com.dto.StatusRespostaDTO;
 import br.com.entities.Documento;
@@ -29,7 +31,7 @@ public final class DocumentoAS {
 		try {
 			usuarioID = Long.valueOf(documentoDTO.getUsuarioID().subSequence(0, documentoDTO.getUsuarioID().indexOf("#")).toString());
 			usuario = usuarioController.findUsuario(usuarioID);
-			documento = new Documento(EncriptaDecriptaRSA.encryptMessageWithPublicKey(usuarioID.toString(), documentoDTO.getMensagem()), usuario.getPessoa());
+			documento = new Documento(Criptografar.encriptText(usuarioID.toString(), documentoDTO.getMensagem()), usuario.getPessoa());
 			documentoController.create(documento);
 			resposta.setStatus("OK");
 			resposta.setMensagem("Documento cadastrado/enviado com sucesso!");
@@ -43,7 +45,7 @@ public final class DocumentoAS {
 	}
 	
 	
-	public static DocumentoDTO getMensagem(Long usuarioID) throws Exception{
+	public static DocumentoDTO getMensagem(Long usuarioID, String password) throws Exception{
 		EntityManagerFactory emf = EntityManager.getFactory();
 		DocumentoController documentoController = new DocumentoController(emf);
 		UsuarioController usuarioController = new UsuarioController(emf);
@@ -58,8 +60,8 @@ public final class DocumentoAS {
 			return null;
 		}
 		
-		//documentoDTO.setMensagem(EncriptaDecriptaRSA.decryptWithPrivateKey(documento.getConteudo(), usuario.getId().toString()));
-		documentoDTO.setMensagem("teste");
+		documentoDTO.setMensagem(Criptografar.decript(usuario.getId().toString(), documento.getConteudo(), password));
+		//documentoDTO.setMensagem("teste");
 		documentoDTO.setUsuarioID(null);
 		
 		return documentoDTO;

@@ -7,8 +7,8 @@ import javax.persistence.EntityManagerFactory;
 
 import br.com.controller.PessoaController;
 import br.com.controller.UsuarioController;
+import br.com.crypt.Criptografar;
 import br.com.crypt.CryptoUtils;
-import br.com.crypt.EncriptaDecriptaRSA;
 import br.com.dto.StatusRespostaDTO;
 import br.com.dto.UsuarioDTO;
 import br.com.dto.UsuarioPermissaoDTO;
@@ -38,7 +38,7 @@ public final class UsuarioAS {
 			usuarioController.create(usuario);
 			resposta.setStatus("OK");
 			resposta.setMensagem("Usu�rio cadastrado com sucesso!");
-			EncriptaDecriptaRSA.geraChaveCadastroInicial(usuario.getId().toString(), usuario.getPassword());
+			Criptografar.geraChaveCadastroInicial(usuario.getId().toString(), usuarioDTO.getPassword());
 			return resposta;
 		} catch (Exception e) {
 			resposta.setStatus("Erro");
@@ -83,25 +83,6 @@ public final class UsuarioAS {
 		return resposta;
 	}
 	
-//	public static StatusRespostaDTO alterarUsuario(Integer idUsuario, UsuarioDTO usuario) {
-//		StatusRespostaDTO resposta = new StatusRespostaDTO();
-//		try {
-//			FacadeUsuario.alterarUsuario(idUsuario, usuario.getNome(), new BigInteger(usuario.getCpf().toString()), usuario.getEmail(), usuario.getUserName(), usuario.getPassword(), usuario.getPerfilInvestidor(), usuario.getFormaOperacao(),usuario.getProfissao());
-//			resposta.setStatus("OK");
-//			resposta.setMensagem("Usu�rio alterado com sucesso!");
-//			
-//			return resposta;
-//		}catch (UsuarioException e) {
-//			resposta.setStatus("Erro");
-//			resposta.setMensagem(e.getError());
-//		} catch (Exception e) {
-//			resposta.setStatus("Erro");
-//			resposta.setMensagem(e.getMessage());
-//		}
-//		
-//		return resposta;
-//	}
-	
 	public static Usuario getUsuario(String username, String password){
 		EntityManagerFactory emf = EntityManager.getFactory();
 		UsuarioController usuarioController = new UsuarioController(emf);
@@ -134,37 +115,4 @@ public final class UsuarioAS {
 		return lUserDTO;
 	}
 	
-//	public static Usuario getUsuario(long codigoUsuario) throws Exception {
-//		IAcaoBolsa acao = connect();
-//		return acao.getUsuario(codigoUsuario);
-//	}
-	
-//	public static Long getTimeExpiracao(Long codigoUsuario){
-//		Long expira = 0l;
-//		try {
-//			UsuarioDTO usuario = getUsuarioLogado(codigoUsuario.intValue());
-//			if (usuario != null) {
-//				if (usuario.getPerfilInvestidor()== EnTipoInvestidor.CONSERVADOR.getCodigo()) {
-//					expira = 1800000l;//Cada 30 Minutos
-//				}else if (usuario.getPerfilInvestidor() == EnTipoInvestidor.MODERADO.getCodigo()) {
-//					expira = 600000l;//Cada 10 Minutos
-//				} else if (usuario.getPerfilInvestidor() == EnTipoInvestidor.AGRESSIVO.getCodigo()){
-//					expira = 60000l;//Cada Minuto
-//				}
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return expira;
-//	}
-
-//	private static IAcaoBolsa connect() throws MalformedURLException {
-//		URL url = new URL("http://127.0.0.1:9876/entities?wsdl");
-//		QName qname = new QName("http://entities/", "AcaoBolsaService");
-//		Service ws = Service.create(url, qname);
-//		IAcaoBolsa acao = ws.getPort(IAcaoBolsa.class);
-//		return acao;
-//	}
-
 }
