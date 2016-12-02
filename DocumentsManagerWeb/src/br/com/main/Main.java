@@ -1,10 +1,5 @@
 package br.com.main;
 
-import br.com.constantes.SystemConstants;
-import br.com.crypt.CryptoUtils;
-import br.com.crypt.RSACripto;
-import br.com.io.GerenciaArquivo;
-
 public class Main {
 
 	public static void main(String[] args) {
@@ -13,11 +8,11 @@ public class Main {
 	}
 	
 	private void inserirPessoa(){
-		RSACripto rsa = new RSACripto();
-		rsa.createNewKeys();
-		
-		rsa.getPrivateKey();
-		rsa.getPublicKey();
+//		RSACripto rsa = new RSACripto();
+//		rsa.createNewKeys();
+//		
+//		rsa.getPrivateKey();
+//		rsa.getPublicKey();
 		
 		
 //		System.out.println(ReaderTxt.getKeyMaster());

@@ -18,6 +18,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="C:/Users/diogo/Furb 2016-2/Sistemas seguros/sqljdbc_6.0/ptb/sqljdbc4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/sun.misc.BASE64Decoder.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
