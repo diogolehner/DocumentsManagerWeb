@@ -32,7 +32,7 @@ public final class AuntenticacaoAS {
 	public static TokenDTO logon(String userName, String password){
 		try{
 			Usuario usuario = UsuarioAS.getUsuario(CryptoUtils.criptografaAES(userName), CryptoUtils.criptografaAES(password));
-			return createJWT(usuario.getId(), userName, 1800000l);
+			return createJWT(usuario.getId(), userName, usuario.getNivelUsuario().getCodigo(), 1800000l);
 		}catch(Exception e){
 			ResponseBuilder builder = null;
 			builder = Response.status(Response.Status.UNAUTHORIZED);
@@ -40,7 +40,7 @@ public final class AuntenticacaoAS {
 		}
 	}
 	
-	public static TokenDTO createJWT(Long id, String nome, long ttlMillis) {
+	public static TokenDTO createJWT(Long id, String nome, String permissao, long ttlMillis) {
 
 		//The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -72,6 +72,7 @@ public final class AuntenticacaoAS {
 		tokenDTO.setToken(builder.compact());
 		tokenDTO.setIdUsuario(id.toString());
 		tokenDTO.setNomeUsuario(nome);
+		tokenDTO.setPermissao(permissao);
 
 		//Builds the JWT and serializes it to a compact, URL-safe string
 		return tokenDTO;
@@ -86,11 +87,11 @@ public final class AuntenticacaoAS {
 					.parseClaimsJws(jwt).getBody();
 			LocalDateTime dataHoraExpiracao = new LocalDateTime(claims.getExpiration().getTime());
 			if (dataHoraExpiracao.isBefore(new LocalDateTime())) {
-				return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("O token informado está expirado")).build();
+				return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("O token informado estï¿½ expirado")).build();
 			}
 			
 		}catch(MalformedJwtException e){
-			return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("O token informado é inválido")).build();
+			return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("O token informado ï¿½ invï¿½lido")).build();
 		}
 		
 		TokenDTO tokenDTO = new TokenDTO();

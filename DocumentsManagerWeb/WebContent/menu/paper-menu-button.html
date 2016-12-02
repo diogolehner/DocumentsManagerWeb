@@ -18,38 +18,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-styles/shadow.html">
 <link rel="import" href="../menu/paper-menu-button-animations.html">
 
-<!--
-Material design: [Dropdown buttons](https://www.google.com/design/spec/components/buttons.html#buttons-dropdown-buttons)
-`paper-menu-button` allows one to compose a designated "trigger" element with
-another element that represents "content", to create a dropdown menu that
-displays the "content" when the "trigger" is clicked.
-The child element with the class `dropdown-trigger` will be used as the
-"trigger" element. The child element with the class `dropdown-content` will be
-used as the "content" element.
-The `paper-menu-button` is sensitive to its content's `iron-select` events. If
-the "content" element triggers an `iron-select` event, the `paper-menu-button`
-will close automatically.
-Example:
-    <paper-menu-button>
-      <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
-      <paper-menu class="dropdown-content">
-        <paper-item>Share</paper-item>
-        <paper-item>Settings</paper-item>
-        <paper-item>Help</paper-item>
-      </paper-menu>
-    </paper-menu-button>
-### Styling
-The following custom properties and mixins are also available for styling:
-Custom property | Description | Default
-----------------|-------------|----------
-`--paper-menu-button-dropdown-background` | Background color of the paper-menu-button dropdown | `--primary-background-color`
-`--paper-menu-button` | Mixin applied to the paper-menu-button | `{}`
-`--paper-menu-button-disabled` | Mixin applied to the paper-menu-button when disabled | `{}`
-`--paper-menu-button-dropdown` | Mixin applied to the paper-menu-button dropdown | `{}`
-`--paper-menu-button-content` | Mixin applied to the paper-menu-button content | `{}`
-@hero hero.svg
-@demo demo/index.html
--->
 
 <dom-module id="paper-menu-button">
   <template>

@@ -22,12 +22,12 @@ public class EncriptaDecriptaRSA {
 	public static final String PATH_CHAVE_PRIVADA = "D:/MasterKey/User/";
 
 	/**
-	 * Local da chave pública no sistema de arquivos.
+	 * Local da chave pï¿½blica no sistema de arquivos.
 	 */
 	public static final String PATH_CHAVE_PUBLICA = "D:/MasterKey/User/";
 
 	/**
-	 * Gera a chave que contém um par de chave Privada e Pública usando 1025
+	 * Gera a chave que contï¿½m um par de chave Privada e Pï¿½blica usando 1025
 	 * bytes. Armazena o conjunto de chaves nos arquivos private.key e
 	 * public.key
 	 */
@@ -39,6 +39,7 @@ public class EncriptaDecriptaRSA {
 
 			File chavePrivadaFile = new File(PATH_CHAVE_PRIVADA + usuario + "/private.key");
 			File chavePublicaFile = new File(PATH_CHAVE_PUBLICA + usuario + "/public.key");
+			
 
 			// Cria os arquivos para armazenar a chave Privada e a chave Publica
 			if (chavePrivadaFile.getParentFile() != null) {
@@ -53,11 +54,11 @@ public class EncriptaDecriptaRSA {
 
 			chavePublicaFile.createNewFile();
 
-			// Salva a Chave Pública no arquivo
+			// Salva a Chave Pï¿½blica no arquivo
 			ObjectOutputStream chavePublicaOS = new ObjectOutputStream(new FileOutputStream(chavePublicaFile));
 			chavePublicaOS.writeObject(key.getPublic());
 			chavePublicaOS.close();
-
+			
 			// Salva a Chave Privada no arquivo
 			ObjectOutputStream chavePrivadaOS = new ObjectOutputStream(new FileOutputStream(chavePrivadaFile));
 			chavePrivadaOS.writeObject(key.getPrivate());
@@ -75,6 +76,7 @@ public class EncriptaDecriptaRSA {
 
 			File chavePrivadaFile = new File(PATH_CHAVE_PRIVADA + usuario + "/private.key");
 			File chavePublicaFile = new File(PATH_CHAVE_PUBLICA + usuario + "/public.key");
+			File chavePublicaFileKDC = new File(PATH_CHAVE_PUBLICA + "/KDC/" + usuario + "/public.key");
 
 			// Cria os arquivos para armazenar a chave Privada e a chave Publica
 			if (chavePrivadaFile.getParentFile() != null) {
@@ -88,12 +90,25 @@ public class EncriptaDecriptaRSA {
 			}
 
 			chavePublicaFile.createNewFile();
+			
+			if (chavePublicaFileKDC.getParentFile() != null) {
+				chavePublicaFileKDC.getParentFile().mkdirs();
+			}
 
-			// Salva a Chave Pública no arquivo
+			chavePublicaFileKDC.createNewFile();
+
+			// Salva a Chave Pï¿½blica no arquivo
 			ObjectOutputStream chavePublicaOS = new ObjectOutputStream(new FileOutputStream(chavePublicaFile));
 			chavePublicaOS.writeObject(key.getPublic());
 			chavePublicaOS.close();
+			
+			chavePublicaFileKDC.createNewFile();
 
+			// Salva a Chave Pï¿½blica no kdc
+			ObjectOutputStream chavePublicaOSKDC = new ObjectOutputStream(new FileOutputStream(chavePublicaFileKDC));
+			chavePublicaOSKDC.writeObject(key.getPublic());
+			chavePublicaOSKDC.close();
+			
 			// Salva a Chave Privada no arquivo
 			ObjectOutputStream chavePrivadaOS = new ObjectOutputStream(new FileOutputStream(chavePrivadaFile));
 			chavePrivadaOS.writeObject(key.getPrivate());
@@ -105,7 +120,7 @@ public class EncriptaDecriptaRSA {
 	}
 
 	/**
-	 * Verifica se o par de chaves Pública e Privada já foram geradas.
+	 * Verifica se o par de chaves Pï¿½blica e Privada jï¿½ foram geradas.
 	 */
 	public static boolean verificaSeExisteChavesNoSO() {
 
@@ -120,14 +135,14 @@ public class EncriptaDecriptaRSA {
 	}
 
 	/**
-	 * Criptografa o texto puro usando chave pública.
+	 * Criptografa o texto puro usando chave pï¿½blica.
 	 */
 	public static byte[] criptografa(String texto, PublicKey chave) {
 		byte[] cipherText = null;
 
 		try {
 			final Cipher cipher = Cipher.getInstance(ALGORITHM);
-			// Criptografa o texto puro usando a chave Púlica
+			// Criptografa o texto puro usando a chave Pï¿½lica
 			cipher.init(Cipher.ENCRYPT_MODE, chave);
 			cipherText = cipher.doFinal(texto.getBytes());
 		} catch (Exception e) {
@@ -137,20 +152,6 @@ public class EncriptaDecriptaRSA {
 		return cipherText;
 	}
 	
-//	public static byte[] criptografaPrivateKey(PrivateKey key, String password) {
-//		byte[] cipherText = null;
-//
-//		try {
-//			final Cipher cipher = Cipher.getInstance(ALGORITHM);
-//			// Criptografa o texto puro usando a chave Púlica
-//			cipher.init(Cipher.ENCRYPT_MODE, chave);
-//			cipherText = cipher.doFinal(texto.getEncoded());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//
-//		return cipherText;
-//	}
 
 	/**
 	 * Decriptografa o texto puro usando chave privada.
@@ -183,6 +184,20 @@ public class EncriptaDecriptaRSA {
 		}
 		return textoCriptografado;
 	}
+	
+	public static byte[] encryptMessageWithPublicKey(String usuario, String texto) {
+		ObjectInputStream inputStream = null;
+		byte[] textoCriptografado = null;
+		try {
+			inputStream = new ObjectInputStream(new FileInputStream(PATH_CHAVE_PUBLICA + "/KDC/" + usuario + "/public.key"));
+			final PublicKey chavePublica = (PublicKey) inputStream.readObject();
+			textoCriptografado = criptografa(texto, chavePublica);
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return textoCriptografado;
+	}
 
 	public static String decryptWithPrivateKey(byte[] textoCriptografado, String usuario) {
 		ObjectInputStream inputStream = null;
@@ -203,10 +218,10 @@ public class EncriptaDecriptaRSA {
 	public static void main(String[] args) {
 
 		try {
-			// Verifica se já existe um par de chaves, caso contrário gera-se as
+			// Verifica se jï¿½ existe um par de chaves, caso contrï¿½rio gera-se as
 			// chaves..
 			// if (!verificaSeExisteChavesNoSO()) {
-			// Método responsável por gerar um par de chaves usando o algoritmo
+			// Mï¿½todo responsï¿½vel por gerar um par de chaves usando o algoritmo
 			// RSA e
 			// armazena as chaves nos seus respectivos arquivos.
 			geraChave("Diogo");
@@ -214,11 +229,11 @@ public class EncriptaDecriptaRSA {
 
 			final String msgOriginal = "Exemplo de mensagem";
 
-			// Criptografa a Mensagem usando a Chave Pública
+			// Criptografa a Mensagem usando a Chave Pï¿½blica
 			final byte[] textoCriptografado = encryptWithPublicKey("Diogo", msgOriginal);
 
 			// Decriptografa a Mensagem usando a Chave Pirvada
-			final String textoPuro = decryptWithPrivateKey(textoCriptografado, "Diogo");
+			final String textoPuro = decryptWithPrivateKey(textoCriptografado.toString().getBytes(), "Diogo");
 
 			// Imprime o texto original, o texto criptografado e
 			// o texto descriptografado.

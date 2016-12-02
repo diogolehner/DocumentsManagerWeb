@@ -1,0 +1,171 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import"
+	href="../bower_components/paper-styles/demo-pages.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import"
+	href="../bower_components/paper-button/paper-button.html">
+<link rel="import"
+	href="../bower_components/paper-input/paper-input.html">
+<link rel="import"
+	href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import"
+	href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import"
+	href="../bower_components/paper-toast/paper-toast.html">
+
+<dom-module id="mensagem-view"> <template
+	id="mensagem-view">
+<style>
+:host {
+	display: block;
+	position: relative;
+	padding: 1em 0;
+}
+
+.paper {
+	background: #4285f4;
+	color: #fff;
+}
+
+.horizontal-section-container { @apply (--layout-horizontal); @apply
+	(--layout-center);
+	/*     @apply(--layout-wrap);  */ @apply (--center-justified);
+	
+}
+
+.vertical-section-container { @apply (--layout-vertical); @apply
+	(--center-justified);
+	
+}
+
+.horizontal-section {
+	background-color: white;
+	padding: 24px;
+	margin-right: 24px;
+	min-width: 2px;
+	min-height: 350px;
+	top: 10px;
+	@
+	apply
+	(--shadow-elevation-2dp);
+}
+
+.vertical-section {
+	background-color: white;
+	padding: 24px;
+	margin: 0 24px 24px 24px;
+	@
+	apply
+	(--shadow-elevation-2dp);
+}
+
+paper-input-container {
+	min-width: 100px;
+}
+
+paper-input {
+	min-width: 100px;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.row::after {
+	content: "";
+	clear: both;
+	display: block;
+}
+
+[class*="col-"] {
+	float: left;
+	padding: 15px;
+}
+
+.col-1 {
+	width: 50%;
+}
+
+.col-2 {
+	width: 15%;
+}
+
+.col-3 {
+	width: 20%;
+}
+
+vaadin-combo-box {
+	max-width: 300px;
+}
+
+paper-button.green {
+	background-color: var(- -paper-green-500);
+	color: white;
+	max-width: 300px;
+}
+
+paper-button.red {
+	background-color: var(- -paper-red-500);
+	color: white;
+	max-width: 150px;
+}
+
+.yellow-button {
+	text-transform: none;
+	color: #eeff41;
+}
+</style>
+<div class="row">
+	<div class="row">
+		<div class="col-1">
+			<h2>Nova mensagem</h2>
+			<paper-textarea id="mensagem" label="Mensagem" bind-value = "{{mensagem}}"></paper-textarea>
+		</div>
+	</div>
+</div>
+</div>
+<div class="row"></div>
+</template> </dom-module>
+<script>
+	Polymer({
+		is : 'mensagem-view',
+		properties : {
+			service : {
+				type : String
+			},
+			method : {
+				type : String
+			},
+			redirect : {
+				type : Boolean,
+				value : false
+			}
+		}
+	});
+	
+	   HTMLImports.whenReady(function() {
+		   	  var mensagem = document.querySelector('#mensagem');
+		      var grid = document.querySelector('#sort');
+		      var msg;
+		      
+		      getJSON('http://localhost:8080/DocumentsManagerWeb/rest/user/getmensagem', function(json) {
+		    	  msg = JSON.parse(json);
+		    	  mensagem.value = msg.mensagem;
+		      });
+		      
+		      function getJSON(file, callback) {
+			    	 var rawFile = new XMLHttpRequest();
+			         rawFile.overrideMimeType("application/json");
+			         rawFile.open("GET", file, true);
+			         rawFile.setRequestHeader("Authorization", getCookie("token"));
+			         rawFile.onreadystatechange = function() {
+			             if (rawFile.readyState === 4 && rawFile.status == "200") {
+			                 callback(rawFile.responseText);
+			             }
+			         }
+			         rawFile.send(null);
+			    }
+		    });
+
+</script>

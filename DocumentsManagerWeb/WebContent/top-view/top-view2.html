@@ -18,7 +18,7 @@
 
 
 
-<dom-module id="top-view"> <template id="top-view">
+<dom-module id="top-view2"> <template id="top-view2">
 <style>
 :host {
 	display: block;
@@ -149,11 +149,6 @@ a:hover {
 						</iron-icon> 
 						<a href="/DocumentsManagerWeb/documents"> Cadastro/Envio de documentos</a>
 					</paper-item> 
-					<paper-item	label="Home" center horizontal layout flex> 
-						<iron-icon	icon="icons:perm-identity" prefix>
-						</iron-icon> 
-						<a href="/DocumentsManagerWeb/cadastro/">Cadastro</a>
-					</paper-item> 
 					<paper-item label="logoff" on-tap="logoff" center horizontal layout flex> 
 						<iron-icon icon="exit-to-app" prefix>
 						</iron-icon>
@@ -167,7 +162,7 @@ a:hover {
 </template> </dom-module>
 <script>
   Polymer({
-    is: 'top-view',
+    is: 'top-view2',
     search : function() {
 		alert("Searching...");
 	},

@@ -11,32 +11,17 @@ import br.com.crypt.CryptoUtils;
 import br.com.crypt.EncriptaDecriptaRSA;
 import br.com.dto.StatusRespostaDTO;
 import br.com.dto.UsuarioDTO;
+import br.com.dto.UsuarioPermissaoDTO;
 import br.com.entities.Pessoa;
 import br.com.entities.Usuario;
 import br.com.provider.EntityManager;
+import br.com.types.TipoNivelUsuario;
 
 public final class UsuarioAS {
 	
 	private UsuarioAS(){
 		
 	}
-	
-//	public static UsuarioDTO getUsuarioLogado(Integer id) {
-//		Object[] fields = FacadeUsuario.getUsuario(id);
-//		if (fields == null || fields.length < 1) {
-//			return null;
-//		}
-//		UsuarioDTO usuarioDTO = new UsuarioDTO();
-//		usuarioDTO.setId((Integer)fields[1]);
-//		usuarioDTO.setCpf(((Number)fields[2]).longValue());
-//		usuarioDTO.setNome((String)fields[3]);
-//		usuarioDTO.setProfissao((String)fields[4]);
-//		usuarioDTO.setEmail((String)fields[5]);
-//		usuarioDTO.setPerfilInvestidor((Integer)fields[9]);
-//		usuarioDTO.setFormaOperacao((Integer)fields[10]);
-//		
-//		return usuarioDTO;
-//	}
 	
 	public static StatusRespostaDTO inserirUsuario(UsuarioDTO usuarioDTO){
 		EntityManagerFactory emf = EntityManager.getFactory();
@@ -52,8 +37,43 @@ public final class UsuarioAS {
 			usuario = new Usuario(CryptoUtils.criptografaAES(usuarioDTO.getLogon()), CryptoUtils.criptografaAES(usuarioDTO.getPassword()), pessoa);
 			usuarioController.create(usuario);
 			resposta.setStatus("OK");
-			resposta.setMensagem("Usuário cadastrado com sucesso!");
+			resposta.setMensagem("Usuï¿½rio cadastrado com sucesso!");
 			EncriptaDecriptaRSA.geraChaveCadastroInicial(usuario.getId().toString(), usuario.getPassword());
+			return resposta;
+		} catch (Exception e) {
+			resposta.setStatus("Erro");
+			resposta.setMensagem(e.getMessage());
+		}
+		
+		return resposta;
+	}
+	
+	public static StatusRespostaDTO gravaPermissao(UsuarioPermissaoDTO usuarioDTO){
+		EntityManagerFactory emf = EntityManager.getFactory();
+		StatusRespostaDTO resposta = new StatusRespostaDTO();
+		UsuarioController usuarioController = new UsuarioController(emf);
+		Usuario usuario;
+		Long usuarioID;
+		
+		try {
+			usuarioID = Long.valueOf(usuarioDTO.getLogon().subSequence(0, usuarioDTO.getLogon().indexOf("#")).toString());
+			usuario = usuarioController.findUsuario(usuarioID);
+			switch (usuarioDTO.getPermissao()) {
+			case "Admin":
+				usuario.setNivelUsuario(TipoNivelUsuario.ADMIN_1);
+				break;
+			case "Usuario":
+				usuario.setNivelUsuario(TipoNivelUsuario.USER_1);
+				break;
+			case "Solicitante":
+				usuario.setNivelUsuario(TipoNivelUsuario.REQUESTER_1);
+				break;	
+			default:
+				break;
+			}
+			usuarioController.edit(usuario);
+			resposta.setStatus("OK");
+			resposta.setMensagem("Permissï¿½o cadastrado com sucesso!");
 			return resposta;
 		} catch (Exception e) {
 			resposta.setStatus("Erro");
@@ -68,7 +88,7 @@ public final class UsuarioAS {
 //		try {
 //			FacadeUsuario.alterarUsuario(idUsuario, usuario.getNome(), new BigInteger(usuario.getCpf().toString()), usuario.getEmail(), usuario.getUserName(), usuario.getPassword(), usuario.getPerfilInvestidor(), usuario.getFormaOperacao(),usuario.getProfissao());
 //			resposta.setStatus("OK");
-//			resposta.setMensagem("Usuário alterado com sucesso!");
+//			resposta.setMensagem("Usuï¿½rio alterado com sucesso!");
 //			
 //			return resposta;
 //		}catch (UsuarioException e) {

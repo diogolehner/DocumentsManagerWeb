@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+<title>Documents manager central</title>
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../top-view/top-view3.html">
+<link rel="import" href="../sempermissao/sempermissao.html">
+	
+	<style is="custom-style">
+
+		iron-image {
+			padding: 1em;
+		}
+		paper-search-bar {
+		/* 	display: block; */
+			min-width: 500px;
+			max-height: 25px;
+		}
+		.item {
+			max-width: 100px;
+		}
+		
+		.horizontal-section {
+			text-align: left;
+			min-width: 260px;
+			min-height: 30px;
+			-webkit-transform-origin: left center;
+      		transform-origin: left center;
+      		 color: #000000;
+		}
+	</style>
+</head>
+<body>
+	<top-view3></top-view3>
+	<br/>
+	<div class="horizontal-section">
+		<sempermissao-view></sempermissao-view>
+  	</div>
+
+  <script>
+   	function validateLogin(){
+       	var url = "http://localhost:8080/DocumentsManagerWeb/rest/auth/token/"+getCookie("token");
+   		var rawFile = new XMLHttpRequest();
+     	           
+   		rawFile.overrideMimeType("application/json");
+		rawFile.open("POST", url, false);
+		rawFile.onreadystatechange = function() {
+		     if (rawFile.status != "200") {
+		    	var form = document.createElement("form");
+			    form.setAttribute("method", "post");
+			    form.setAttribute("action", "/DocumentsManagerWeb/login/");
+				
+			    document.body.appendChild(form);
+			    form.submit();
+		     }
+		}
+		rawFile.send(null);
+	}
+	
+	 function getCookie (cname) {
+	    var name = cname + "=";
+	    var ca = document.cookie.split(';');
+	    for(var i = 0; i < ca.length; i++) {
+	        var c = ca[i];
+	        while (c.charAt(0) == ' ') {
+	            c = c.substring(1);
+	        }
+	        if (c.indexOf(name) == 0) {
+	            return c.substring(name.length, c.length);
+	        }
+	    }
+	    return "";
+	}
+	 
+	window.onload = validateLogin;
+  </script>
+</body>
+</html>

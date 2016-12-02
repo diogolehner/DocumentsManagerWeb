@@ -3,12 +3,13 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 
-<dom-module id="usermanager-view">
-  <template id="usermanager-view">
+<dom-module id="documents-view">
+  <template id="documents-view">
 	<style>
 	:host {
 		display: block;
@@ -98,7 +99,20 @@
         
 </style>
 	<div class="row">
+		<div class="col-1">
+			<h2>Cadastre a mensagem</h2>
+			<paper-textarea label="Insira a mensagem" bind-value = "{{mensagem}}"></paper-textarea>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-1">
+			<h2>Arquivo anexo</h2>
+			<p>Em construção!</p>
+		</div>
+	</div>
+	<div class="row">
    		<div class="col-1">
+   			<h2>Destinatario</h2>
    			<vaadin-combo-box
    		 		id="pessoa"
    		 		bind-value = "{{pessoa}}"
@@ -109,29 +123,17 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-1">
-			<vaadin-combo-box
-    		 		id="permissao"
-    		 		bind-value = "{{permissao}}"
-    		 		label="Tipo de permiss�o"
-		    		items='["Admin", "Usuario", "Solicitante"]'
-		  			>
-			</vaadin-combo-box>
-		</div>	
 	</div>
 	<div align="left" class="row">	
     	<div>
-    	    <paper-button raised class="custom green" on-click="gravar"><iron-icon icon="save"></iron-icon>Gravar</paper-button>
+    	    <paper-button raised class="custom green" on-click="gravar"><iron-icon icon="save"></iron-icon>Gravar/Enviar</paper-button>
 		</div>
-		<paper-toast id="message" duration="0" text="&Eacute; obrig&aacute;torio informar o usu&aacute;rio e a senha!">
-				<paper-button onclick="message.toggle()" class="yellow-button">Close now!</paper-button>
-		</paper-toast>
 	</div>
   </template>
 </dom-module>
 <script>
 Polymer({
-    is: 'usermanager-view',
+    is: 'documents-view',
     properties: {
         service: {
             type: String
@@ -146,47 +148,44 @@ Polymer({
     },
     
     gravar: function(){
-    	var usuarioDTO = new Object();
-    	usuarioDTO.logon = this.pessoa;
-    	usuarioDTO.permissao = this.permissao;
+    	var documentoDTO = new Object();
+    	documentoDTO.mensagem = this.mensagem;
+    	documentoDTO.usuarioID = this.pessoa;
     	
     	var person = new Object();
-		person.logon = this.pessoa;
-		person.permissao = this.permissao;
-    	
-       	var token = getCookie("token");
+		person.mensagem = this.mensagem;
+		person.usuarioID = this.pessoa;
+		var token = getCookie("token");
 
-       	var rawFile = new XMLHttpRequest();
+		var rawFile = new XMLHttpRequest();
         rawFile.overrideMimeType("application/json");
         rawFile.open(this.method, this.service, true);
     	rawFile.setRequestHeader("Authorization", token);
-        rawFile.setRequestHeader("Content-Type", "application/json");
-        
 	    var redireciona =  this.redirect;
-        
         var mensagem = this.$.message;
+        rawFile.setRequestHeader("Content-Type", "application/json");
         rawFile.onreadystatechange = function() {
             if (rawFile.readyState === 4 && rawFile.status == "200") {
             	mensagem.text = JSON.parse(rawFile.responseText).mensagem;
             	mensagem.open();
-//             	if("OK" == JSON.parse(rawFile.responseText).status && redireciona){
-//             		var form = document.createElement("form");
-//     			    form.setAttribute("method", "post");
-//     			    form.setAttribute("action", "/DocumentsManagerWeb/rest/user/gravaPermissao/");
+            	if("OK" == JSON.parse(rawFile.responseText).status && redireciona){
+            		var form = document.createElement("form");
+    			    form.setAttribute("method", "post");
+    			    form.setAttribute("action", "/DocumentsManagerWeb/rest/user/gravamensagem/");
     				
-//     				var hiddenField = document.createElement("input");
-//     			    hiddenField.setAttribute("type", "hidden");
-//     			    hiddenField.setAttribute("nome", 'person');
-//     			    hiddenField.setAttribute("value", person);
+    				var hiddenField = document.createElement("input");
+    			    hiddenField.setAttribute("type", "hidden");
+    			    hiddenField.setAttribute("nome", 'person');
+    			    hiddenField.setAttribute("value", person);
     		
-//     			    form.appendChild(hiddenField);
+    			    form.appendChild(hiddenField);
     		
-//     			    document.body.appendChild(form);
-//     			    form.submit();
-//             	}
+    			    document.body.appendChild(form);
+    			    form.submit();
+            	}
             }
         }
-        rawFile.send(JSON.stringify(usuarioDTO));
+        rawFile.send(JSON.stringify(documentoDTO));
     }, 
     
     getToken : function (cnome) {
@@ -247,6 +246,21 @@ Polymer({
         }
         var elementsPessoa = rawFile.send(JSON.stringify(usuario));
   },
+  
+  getCookie : function(cname) {
+		var name = cname + "=";
+		var ca = document.cookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	},
 	 
   });
 	    

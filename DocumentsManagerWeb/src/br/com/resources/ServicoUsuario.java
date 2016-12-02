@@ -11,7 +11,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
+import br.com.as.DocumentoAS;
 import br.com.as.UsuarioAS;
+import br.com.dto.DocumentoDTO;
 import br.com.dto.StatusRespostaDTO;
 import br.com.dto.UsuarioDTO;
 import br.com.dto.UsuarioPermissaoDTO;
@@ -44,16 +46,24 @@ public class ServicoUsuario {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public StatusRespostaDTO gravaPermissao(UsuarioPermissaoDTO usuario){
-		return null;
+		return UsuarioAS.gravaPermissao(usuario);
 	}
-
-//	@PUT
-//	@Path("/alter")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public StatusRespostaDTO alterarUsuario(UsuarioDTO usuario){
-//		String idUsuario = httpRequest.getRequestHeader("idUsuarioLogado").get(0);
-//		return BOUsuario.alterarUsuario(Integer.parseInt(idUsuario),usuario);
-//	}
+	
+	@POST
+	@Path("/gravamensagem")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public StatusRespostaDTO gravaPermissao(DocumentoDTO documento){
+		return DocumentoAS.gravaMensagem(documento);
+	}
+	
+	@GET
+	@Path("/getmensagem")
+	@Produces(MediaType.APPLICATION_JSON)
+	public DocumentoDTO getDocumentoDTO() throws Exception{
+		Long usuarioID = Long.valueOf(httpRequest.getRequestHeader("idUsuario").get(0));
+		DocumentoDTO documentoDTO = DocumentoAS.getMensagem(usuarioID);
+		return documentoDTO;
+	}
 	
 }

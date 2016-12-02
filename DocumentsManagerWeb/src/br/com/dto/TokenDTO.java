@@ -2,9 +2,10 @@ package br.com.dto;
 
 public class TokenDTO {
 
-	private String token;
+	private String token = "vazio";
 	private String idUsuario;
 	private String nomeUsuario;
+	private String permissao;
 	
 	public String getToken() {
 		return token;
@@ -23,6 +24,12 @@ public class TokenDTO {
 	}
 	public void setNomeUsuario(String nomeUsuario) {
 		this.nomeUsuario = nomeUsuario;
+	}
+	public String getPermissao() {
+		return permissao;
+	}
+	public void setPermissao(String permissao) {
+		this.permissao = permissao;
 	}
 	
 }
