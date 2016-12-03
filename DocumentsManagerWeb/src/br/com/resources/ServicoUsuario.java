@@ -11,12 +11,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
+import br.com.as.AuditoriaAS;
 import br.com.as.DocumentoAS;
 import br.com.as.UsuarioAS;
+import br.com.dto.AuditoriaDTO;
 import br.com.dto.DocumentoDTO;
 import br.com.dto.StatusRespostaDTO;
 import br.com.dto.UsuarioDTO;
 import br.com.dto.UsuarioPermissaoDTO;
+import br.com.types.TipoAuditoria;
 
 /**
  * 
@@ -37,6 +40,7 @@ public class ServicoUsuario {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public StatusRespostaDTO inserirUsuario(UsuarioDTO usuarioDTO){
+		//AuditoriaAS.gerarAuditoria(null, TipoAuditoria.NOVO_USUARIO);
 		return UsuarioAS.inserirUsuario(usuarioDTO);
 	}
 	
@@ -53,6 +57,8 @@ public class ServicoUsuario {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public StatusRespostaDTO gravaPermissao(UsuarioPermissaoDTO usuario){
+		Long usuarioID = Long.valueOf(httpRequest.getRequestHeader("idUsuario").get(0));
+		AuditoriaAS.gerarAuditoria(usuarioID, TipoAuditoria.CADASTRO_MANAGER);
 		return UsuarioAS.gravaPermissao(usuario);
 	}
 	
@@ -62,6 +68,7 @@ public class ServicoUsuario {
 	@Produces(MediaType.APPLICATION_JSON)
 	public StatusRespostaDTO gravaPermissao(DocumentoDTO documento){
 		Long usuarioID = Long.valueOf(httpRequest.getRequestHeader("idUsuario").get(0));
+		AuditoriaAS.gerarAuditoria(usuarioID, TipoAuditoria.CADASTRO_CODUMENTO);
 		return DocumentoAS.gravaMensagem(documento, usuarioID);
 	}
 	
@@ -71,7 +78,16 @@ public class ServicoUsuario {
 	public DocumentoDTO getDocumentoDTO() throws Exception{
 		Long usuarioID = Long.valueOf(httpRequest.getRequestHeader("idUsuario").get(0));
 		DocumentoDTO documentoDTO = DocumentoAS.getMensagem(usuarioID);
+		AuditoriaAS.gerarAuditoria(usuarioID, TipoAuditoria.ACESSO_MENSAGEM);
 		return documentoDTO;
+	}
+	
+	@GET
+	@Path("/getauditoria")
+	@Produces(MediaType.APPLICATION_JSON)
+	public AuditoriaDTO getAuditoriaDTO() throws Exception{
+		AuditoriaDTO auditoriaDTO = AuditoriaAS.getAuditoria();
+		return auditoriaDTO;
 	}
 	
 }

@@ -14,7 +14,7 @@
 <link rel="import"
 	href="../bower_components/paper-toast/paper-toast.html">
 
-<dom-module id="mensagem-view"> <template id="mensagem-view">
+<dom-module id="auditoria-view"> <template id="auditoria-view">
 <style>
 :host {
 	display: block;
@@ -118,8 +118,8 @@ paper-button.red {
 <div class="row">
 	<div class="row">
 		<div class="col-1">
-			<h2>Nova mensagem</h2>
-			<paper-textarea id="mensagem" label="Mensagem"  readonly="true"
+			<h2>Registros</h2>
+			<paper-textarea id="mensagem" label="Registros" readonly="true"
 				bind-value="{{mensagem}}"></paper-textarea>
 		</div>
 	</div>
@@ -129,7 +129,7 @@ paper-button.red {
 </template> </dom-module>
 <script>
 	Polymer({
-		is : 'mensagem-view',
+		is : 'auditoria-view',
 		properties : {
 			service : {
 				type : String
@@ -151,10 +151,10 @@ paper-button.red {
 				var msg;
 
 				getJSON(
-						'http://localhost:8080/DocumentsManagerWeb/rest/user/getmensagem',
+						'http://localhost:8080/DocumentsManagerWeb/rest/user/getauditoria',
 						function(json) {
 							msg = JSON.parse(json);
-							mensagem.value = msg.mensagem;
+							mensagem.value = msg.auditoria;
 						});
 
 				function getJSON(file, callback) {
