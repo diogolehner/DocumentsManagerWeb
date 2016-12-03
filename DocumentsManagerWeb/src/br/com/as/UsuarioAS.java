@@ -37,7 +37,7 @@ public final class UsuarioAS {
 			usuario = new Usuario(CriptoAES.criptografaAES(usuarioDTO.getLogon()), CriptoAES.criptografaAES(usuarioDTO.getPassword()), pessoa);
 			usuarioController.create(usuario);
 			resposta.setStatus("OK");
-			resposta.setMensagem("Usu�rio cadastrado com sucesso!");
+			resposta.setMensagem("Usuário cadastrado com sucesso!");
 			CriptoRSA.geraParChaveCadastroInicial(usuario.getId().toString(), usuarioDTO.getPassword());
 			return resposta;
 		} catch (Exception e) {
@@ -73,7 +73,7 @@ public final class UsuarioAS {
 			}
 			usuarioController.edit(usuario);
 			resposta.setStatus("OK");
-			resposta.setMensagem("Permiss�o cadastrado com sucesso!");
+			resposta.setMensagem("Permissão cadastrada com sucesso!");
 			return resposta;
 		} catch (Exception e) {
 			resposta.setStatus("Erro");

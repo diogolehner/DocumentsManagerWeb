@@ -24,7 +24,7 @@ import javax.persistence.Table;
 @Entity 
 @Table(name="TB_DOCUMENTO")
 @NamedQueries({
-    @NamedQuery(name = "documentFind", query = "select doc from Documento doc join doc.pessoa pes where pes.id = :pessoaID "),
+    @NamedQuery(name = "documentFind", query = "select doc from Documento doc join doc.pessoa pes where pes.id = :pessoaID order by doc.id desc"),
     })
 public class Documento implements Serializable{
 	private static final long serialVersionUID = -8828611186402285334L;

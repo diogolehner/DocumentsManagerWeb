@@ -1,5 +1,8 @@
 package br.com.as;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManagerFactory;
 
 import br.com.controller.DocumentoController;
@@ -25,19 +28,23 @@ public final class DocumentoAS {
 		
 	}
 	
-	public static StatusRespostaDTO gravaMensagem(DocumentoDTO documentoDTO){
+	public static StatusRespostaDTO gravaMensagem(DocumentoDTO documentoDTO, Long usuarioLogadoID){
 		EntityManagerFactory emf = EntityManager.getFactory();
 		StatusRespostaDTO resposta = new StatusRespostaDTO();
 		DocumentoController documentoController = new DocumentoController(emf);
 		UsuarioController usuarioController = new UsuarioController(emf);
 		Documento documento;
 		Usuario usuario;
+		Usuario usuarioLogado;
 		Long usuarioID;
+		String message;
 		
 		try {
 			usuarioID = Long.valueOf(documentoDTO.getUsuarioID().subSequence(0, documentoDTO.getUsuarioID().indexOf("#")).toString());
 			usuario = usuarioController.findUsuario(usuarioID);
-			documento = new Documento(CriptoRSA.encriptText(usuarioID.toString(), documentoDTO.getMensagem()), usuario.getPessoa());
+			usuarioLogado = usuarioController.findUsuario(usuarioLogadoID);
+			message = usuarioLogado.getPessoa().getNome() + ": " + documentoDTO.getMensagem();
+			documento = new Documento(CriptoRSA.encriptText(usuarioID.toString(), message), usuario.getPessoa());
 			documentoController.create(documento);
 			resposta.setStatus("OK");
 			resposta.setMensagem("Documento cadastrado/enviado com sucesso!");
@@ -55,18 +62,27 @@ public final class DocumentoAS {
 		EntityManagerFactory emf = EntityManager.getFactory();
 		DocumentoController documentoController = new DocumentoController(emf);
 		UsuarioController usuarioController = new UsuarioController(emf);
-		Documento documento = new Documento();
+		List<Documento> lDocumento = new ArrayList<>();
 		DocumentoDTO documentoDTO = new DocumentoDTO();
 		Usuario usuario;
 		
 		try {
 			usuario = usuarioController.findUsuario(usuarioID);
-			documento = documentoController.getDocumento(usuario.getPessoa().getId());
+			lDocumento = documentoController.getDocumento(usuario.getPessoa().getId());
 		} catch (Exception e) {
 			return null;
 		}
 		
-		documentoDTO.setMensagem(CriptoRSA.decript(usuario.getId().toString(), documento.getConteudo(), CriptoAES.descriptografaAES(usuario.getPassword())));
+		StringBuilder mensagens = new StringBuilder();
+		for (Documento umDoc : lDocumento) {
+			if	(mensagens.toString().isEmpty()){
+				mensagens.append(CriptoRSA.decript(usuario.getId().toString(), umDoc.getConteudo(), CriptoAES.descriptografaAES(usuario.getPassword())));
+			}else{
+				mensagens.append("\n").append(CriptoRSA.decript(usuario.getId().toString(), umDoc.getConteudo(), CriptoAES.descriptografaAES(usuario.getPassword())));
+			}
+		}
+		
+		documentoDTO.setMensagem(mensagens.toString());
 		documentoDTO.setUsuarioID(null);
 		
 		return documentoDTO;

@@ -139,14 +139,15 @@ public class DocumentoController implements Serializable{
         }
     }
     
-    public Documento getDocumento(Long pessoaID) throws Exception {
+    @SuppressWarnings("unchecked")
+	public List<Documento> getDocumento(Long pessoaID) throws Exception {
         EntityManager em = getEntityManager();
         
     	try {
     		Query query = em.createNamedQuery("documentFind");
     		query.setParameter("pessoaID", pessoaID);
     		
-    		return (Documento) query.getSingleResult();
+    		return (List<Documento>) query.getResultList();
     	}catch(Exception e){
     		throw new Exception(e.getMessage());
     	} finally {

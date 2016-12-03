@@ -61,7 +61,8 @@ public class ServicoUsuario {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public StatusRespostaDTO gravaPermissao(DocumentoDTO documento){
-		return DocumentoAS.gravaMensagem(documento);
+		Long usuarioID = Long.valueOf(httpRequest.getRequestHeader("idUsuario").get(0));
+		return DocumentoAS.gravaMensagem(documento, usuarioID);
 	}
 	
 	@GET
