@@ -1,7 +1,5 @@
 package br.com.crypt;
 
-import org.apache.commons.codec.binary.Base64;
-
 /**
  * Classe que criptografa e descritografa atr�ves de subtra��o de char.
  * 

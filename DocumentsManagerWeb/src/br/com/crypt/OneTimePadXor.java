@@ -1,7 +1,5 @@
 package br.com.crypt;
 
-import java.io.UnsupportedEncodingException;
-
 import org.apache.commons.codec.binary.Base64;
 
 /**

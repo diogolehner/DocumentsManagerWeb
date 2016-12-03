@@ -1,8 +1,15 @@
 package br.com.dto;
 
-import br.com.crypt.CryptoUtils;
+import br.com.crypt.CriptoAES;
 import br.com.entities.Usuario;
 
+/**
+ * 
+ *  Funcionalidade: Classe auxiliar de usuario
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 public class UsuarioDTO {
 	private String id;
 	private String logon;
@@ -11,13 +18,12 @@ public class UsuarioDTO {
 	private String documento;
 
 	public UsuarioDTO() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public UsuarioDTO(Usuario usuario) throws Exception {
 		this.id = usuario.getId().toString();
-		this.logon = CryptoUtils.descriptografaAES(usuario.getLogon());
-		this.password = CryptoUtils.descriptografaAES(usuario.getPassword());
+		this.logon = CriptoAES.descriptografaAES(usuario.getLogon());
+		this.password = CriptoAES.descriptografaAES(usuario.getPassword());
 		this.nome = usuario.getPessoa().getNome();
 		this.documento = usuario.getPessoa().getDocumento();
 	}

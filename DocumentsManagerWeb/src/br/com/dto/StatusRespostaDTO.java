@@ -1,5 +1,12 @@
 package br.com.dto;
 
+/**
+ * 
+ *  Funcionalidade: Classe auxiliar com status da resposta do backend para o front
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 public class StatusRespostaDTO {
 
 	private String status;

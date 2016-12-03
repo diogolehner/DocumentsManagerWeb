@@ -14,7 +14,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.joda.time.LocalDateTime;
 
 import br.com.constantes.SystemConstants;
-import br.com.crypt.CryptoUtils;
+import br.com.crypt.CriptoAES;
 import br.com.dto.TokenDTO;
 import br.com.entities.Usuario;
 import io.jsonwebtoken.Claims;
@@ -31,7 +31,7 @@ public final class AuntenticacaoAS {
 	
 	public static TokenDTO logon(String userName, String password){
 		try{
-			Usuario usuario = UsuarioAS.getUsuario(CryptoUtils.criptografaAES(userName), CryptoUtils.criptografaAES(password));
+			Usuario usuario = UsuarioAS.getUsuario(CriptoAES.criptografaAES(userName), CriptoAES.criptografaAES(password));
 			return createJWT(usuario.getId(), userName, usuario.getNivelUsuario().getCodigo(), 1800000l);
 		}catch(Exception e){
 			ResponseBuilder builder = null;

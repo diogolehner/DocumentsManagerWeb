@@ -13,6 +13,13 @@ import javax.persistence.criteria.Root;
 import br.com.controller.exceptions.NonexistentEntityException;
 import br.com.entities.Pessoa;
 
+/**
+ * 
+ *  Funcionalidade: Controller da tabela de pessoa. Gerencia acesso ao banco de dados.
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 public class PessoaController implements Serializable{
 	private static final long serialVersionUID = 4013352781376667955L;
 	private EntityManagerFactory emf = null;

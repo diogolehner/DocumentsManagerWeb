@@ -12,11 +12,11 @@ import br.com.constantes.SystemConstants;
 import br.com.types.TipoAlgoritmoHash;
 
 /**
- * Classe utilizada para criptografia
+ * Classe utilizada para criptografia AES
  * @author Diogo Lehner
  *
  */
-public class CryptoUtils {
+public class CriptoAES {
 	
 	public static String criptografaAES(String valor) throws Exception{
 		return criptografaAES(valor, SystemConstants.chaveMestre);

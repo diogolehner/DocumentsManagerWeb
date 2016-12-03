@@ -2,7 +2,6 @@ package br.com.crypt;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +25,13 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.codec.binary.Base64;
 
-public final class Criptografar {
+/**
+ * 
+ * Classe utilizada para criptografia RSA
+ * @author Diogo.Lehner
+ *
+ */
+public final class CriptoRSA {
 	
 	/**
 	 * Local da chave privada no sistema de arquivos.
@@ -38,13 +43,12 @@ public final class Criptografar {
 	 */
 	public static final String PATH_CHAVE_PUBLICA = "D:/MasterKey/User/";
 	
-	private Criptografar() {
+	private CriptoRSA() {
 
 	}
 	
-	private static String ddd = "";
-
-	public static String[] geraChaveCadastroInicial(String usuario, String password) {
+	@SuppressWarnings("resource")
+	public static String[] geraParChaveCadastroInicial(String usuario, String password) {
 		String[] dir = new String[2];
 		try {
 			KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
@@ -58,12 +62,6 @@ public final class Criptografar {
 
 			IOneTimePad oneTimePadXor = new OneTimePad();
 			String chavePrivadaCriptografada = oneTimePadXor.criptografar(Base64.encodeBase64String(priKey.getEncoded()), password);
-			ddd = Base64.encodeBase64String(priKey.getEncoded());
-			
-//			File arquivoPrivado = File.createTempFile(nomeUsuario, ".prt");
-//			File arquivoPublico = File.createTempFile(nomeUsuario, ".puk");
-//			File arquivoPrivado = new File(nomeUsuario + ".prt");
-//			File arquivoPublico = new File(nomeUsuario + ".puk");
 			
 			File arquivoPrivado = new File(PATH_CHAVE_PRIVADA + usuario + "/private.key");
 			File arquivoPublico = new File(PATH_CHAVE_PUBLICA + "/KDC/" + usuario + "/public.key");
@@ -116,9 +114,6 @@ public final class Criptografar {
 
 			byte[] encodeBase64 = cipher.doFinal(texto.getBytes());
 
-//			File arquivoPublico = File.createTempFile("mensage", ".msn");
-//			Files.write(arquivoPublico.toPath(), Base64.encodeBase64(encodeBase64));
-
 			return Base64.encodeBase64(encodeBase64);
 
 		} catch (IOException e) {
@@ -147,9 +142,6 @@ public final class Criptografar {
 
 			IOneTimePad oneTimePadXor = new OneTimePad();
 			String chavePrivadaDescriptografada = oneTimePadXor.descriptografar(new String(chavePrivada, "ISO-8859-1"),password);
-
-//			File fileMensagem = new File(caminhoMensagem);
-//			byte[] mensagem = Files.readAllBytes(fileMensagem.toPath());
 
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 			PrivateKey priKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(Base64.decodeBase64(chavePrivadaDescriptografada)));

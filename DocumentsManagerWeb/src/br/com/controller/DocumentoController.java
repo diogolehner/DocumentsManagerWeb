@@ -13,6 +13,13 @@ import javax.persistence.criteria.Root;
 import br.com.controller.exceptions.NonexistentEntityException;
 import br.com.entities.Documento;
 
+/**
+ * 
+ *  Funcionalidade: Controller da tabela de documentos. Gerencia acesso ao banco de dados.
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 public class DocumentoController implements Serializable{
 	private static final long serialVersionUID = 4504272585690846103L;
 	
@@ -146,6 +153,5 @@ public class DocumentoController implements Serializable{
     		em.close();
     	}
     }
-    
     
 }

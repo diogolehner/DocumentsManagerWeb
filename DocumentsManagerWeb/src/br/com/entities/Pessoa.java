@@ -9,6 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * 
+ *  Funcionalidade: Entidade de pessoa
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 @Entity 
 @Table(name="TB_PESSOA")
 public class Pessoa implements Serializable{

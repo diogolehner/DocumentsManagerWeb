@@ -18,6 +18,13 @@ import br.com.dto.StatusRespostaDTO;
 import br.com.dto.UsuarioDTO;
 import br.com.dto.UsuarioPermissaoDTO;
 
+/**
+ * 
+ *  Funcionalidade: Classe do servico do usuario
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 @Path("/user")
 public class ServicoUsuario {
 
@@ -62,7 +69,7 @@ public class ServicoUsuario {
 	@Produces(MediaType.APPLICATION_JSON)
 	public DocumentoDTO getDocumentoDTO() throws Exception{
 		Long usuarioID = Long.valueOf(httpRequest.getRequestHeader("idUsuario").get(0));
-		DocumentoDTO documentoDTO = DocumentoAS.getMensagem(usuarioID, "1");
+		DocumentoDTO documentoDTO = DocumentoAS.getMensagem(usuarioID);
 		return documentoDTO;
 	}
 	

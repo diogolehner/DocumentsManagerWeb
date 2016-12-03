@@ -14,8 +14,7 @@
 <link rel="import"
 	href="../bower_components/paper-toast/paper-toast.html">
 
-<dom-module id="mensagem-view"> <template
-	id="mensagem-view">
+<dom-module id="mensagem-view"> <template id="mensagem-view">
 <style>
 :host {
 	display: block;
@@ -120,7 +119,8 @@ paper-button.red {
 	<div class="row">
 		<div class="col-1">
 			<h2>Nova mensagem</h2>
-			<paper-textarea id="mensagem" label="Mensagem" bind-value = "{{mensagem}}"></paper-textarea>
+			<paper-textarea id="mensagem" label="Mensagem"
+				bind-value="{{mensagem}}"></paper-textarea>
 		</div>
 	</div>
 </div>
@@ -143,29 +143,32 @@ paper-button.red {
 			}
 		}
 	});
-	
-	   HTMLImports.whenReady(function() {
-		   	  var mensagem = document.querySelector('#mensagem');
-		      var grid = document.querySelector('#sort');
-		      var msg;
-		      
-		      getJSON('http://localhost:8080/DocumentsManagerWeb/rest/user/getmensagem', function(json) {
-		    	  msg = JSON.parse(json);
-		    	  mensagem.value = msg.mensagem;
-		      });
-		      
-		      function getJSON(file, callback) {
-			    	 var rawFile = new XMLHttpRequest();
-			         rawFile.overrideMimeType("application/json");
-			         rawFile.open("GET", file, true);
-			         rawFile.setRequestHeader("Authorization", getCookie("token"));
-			         rawFile.onreadystatechange = function() {
-			             if (rawFile.readyState === 4 && rawFile.status == "200") {
-			                 callback(rawFile.responseText);
-			             }
-			         }
-			         rawFile.send(null);
-			    }
-		    });
 
+	HTMLImports
+			.whenReady(function() {
+				var mensagem = document.querySelector('#mensagem');
+				var grid = document.querySelector('#sort');
+				var msg;
+
+				getJSON(
+						'http://localhost:8080/DocumentsManagerWeb/rest/user/getmensagem',
+						function(json) {
+							msg = JSON.parse(json);
+							mensagem.value = msg.mensagem;
+						});
+
+				function getJSON(file, callback) {
+					var rawFile = new XMLHttpRequest();
+					rawFile.overrideMimeType("application/json");
+					rawFile.open("GET", file, true);
+					rawFile.setRequestHeader("Authorization",
+							getCookie("token"));
+					rawFile.onreadystatechange = function() {
+						if (rawFile.readyState === 4 && rawFile.status == "200") {
+							callback(rawFile.responseText);
+						}
+					}
+					rawFile.send(null);
+				}
+			});
 </script>

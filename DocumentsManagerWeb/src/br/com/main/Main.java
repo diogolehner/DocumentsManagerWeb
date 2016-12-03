@@ -1,5 +1,12 @@
 package br.com.main;
 
+/**
+ * 
+ *  Funcionalidade: Testes
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) {

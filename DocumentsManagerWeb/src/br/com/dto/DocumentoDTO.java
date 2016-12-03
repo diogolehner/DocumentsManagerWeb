@@ -1,11 +1,17 @@
 package br.com.dto;
 
+/**
+ * 
+ *  Funcionalidade: Classe auxiliar de documentos
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 public class DocumentoDTO {
 	private String mensagem;
 	private String usuarioID;
 
 	public DocumentoDTO() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public DocumentoDTO(String mensagem, String usuarioID) throws Exception {

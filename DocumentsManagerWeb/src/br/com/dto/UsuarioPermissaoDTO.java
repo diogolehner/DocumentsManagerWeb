@@ -1,11 +1,17 @@
 package br.com.dto;
 
+/**
+ * 
+ *  Funcionalidade: Classe auxiliar com permissao do usuario
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 public class UsuarioPermissaoDTO {
 	private String logon;
 	private String permissao;
 
 	public UsuarioPermissaoDTO() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public UsuarioPermissaoDTO(String logon, String permissao) throws Exception {

@@ -18,6 +18,13 @@ import javax.persistence.Table;
 
 import br.com.types.TipoNivelUsuario;
 
+/**
+ * 
+ *  Funcionalidade: Entidade de usuario
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 @Entity 
 @Table(name="TB_USUARIO")
 @NamedQueries({

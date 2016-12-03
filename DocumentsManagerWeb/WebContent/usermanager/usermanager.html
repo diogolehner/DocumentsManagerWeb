@@ -169,21 +169,6 @@ Polymer({
             if (rawFile.readyState === 4 && rawFile.status == "200") {
             	mensagem.text = JSON.parse(rawFile.responseText).mensagem;
             	mensagem.open();
-//             	if("OK" == JSON.parse(rawFile.responseText).status && redireciona){
-//             		var form = document.createElement("form");
-//     			    form.setAttribute("method", "post");
-//     			    form.setAttribute("action", "/DocumentsManagerWeb/rest/user/gravaPermissao/");
-    				
-//     				var hiddenField = document.createElement("input");
-//     			    hiddenField.setAttribute("type", "hidden");
-//     			    hiddenField.setAttribute("nome", 'person');
-//     			    hiddenField.setAttribute("value", person);
-    		
-//     			    form.appendChild(hiddenField);
-    		
-//     			    document.body.appendChild(form);
-//     			    form.submit();
-//             	}
             }
         }
         rawFile.send(JSON.stringify(usuarioDTO));

@@ -13,6 +13,13 @@ import javax.persistence.criteria.Root;
 import br.com.controller.exceptions.NonexistentEntityException;
 import br.com.entities.Usuario;
 
+/**
+ * 
+ *  Funcionalidade: Controller da tabela de usuario. Gerencia acesso ao banco de dados.
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 public class UsuarioController implements Serializable{
 	private static final long serialVersionUID = 4504272585690846103L;
 	
@@ -161,7 +168,5 @@ public class UsuarioController implements Serializable{
     		em.close();
     	}
     }
-    
-    
     
 }

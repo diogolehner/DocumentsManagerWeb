@@ -14,6 +14,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+/**
+ * 
+ *  Funcionalidade: Entidade de auditoria
+ *  3 de dez de 2016
+ *	@author Diogo.Lehner
+ *
+ */
 @Entity 
 @Table(name="TB_USUARIO")
 @NamedQueries({

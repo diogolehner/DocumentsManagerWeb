@@ -7,8 +7,8 @@ import javax.persistence.EntityManagerFactory;
 
 import br.com.controller.PessoaController;
 import br.com.controller.UsuarioController;
-import br.com.crypt.Criptografar;
-import br.com.crypt.CryptoUtils;
+import br.com.crypt.CriptoRSA;
+import br.com.crypt.CriptoAES;
 import br.com.dto.StatusRespostaDTO;
 import br.com.dto.UsuarioDTO;
 import br.com.dto.UsuarioPermissaoDTO;
@@ -34,11 +34,11 @@ public final class UsuarioAS {
 		try {
 			pessoa = new Pessoa(usuarioDTO.getNome(), usuarioDTO.getDocumento());
 			pessoa = pessoaController.create(pessoa);
-			usuario = new Usuario(CryptoUtils.criptografaAES(usuarioDTO.getLogon()), CryptoUtils.criptografaAES(usuarioDTO.getPassword()), pessoa);
+			usuario = new Usuario(CriptoAES.criptografaAES(usuarioDTO.getLogon()), CriptoAES.criptografaAES(usuarioDTO.getPassword()), pessoa);
 			usuarioController.create(usuario);
 			resposta.setStatus("OK");
 			resposta.setMensagem("Usu�rio cadastrado com sucesso!");
-			Criptografar.geraChaveCadastroInicial(usuario.getId().toString(), usuarioDTO.getPassword());
+			CriptoRSA.geraParChaveCadastroInicial(usuario.getId().toString(), usuarioDTO.getPassword());
 			return resposta;
 		} catch (Exception e) {
 			resposta.setStatus("Erro");
